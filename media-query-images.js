@@ -1,14 +1,6 @@
-/*  media-query-images
- *  version: 1.0.3
- *  https://github.com/cuth/media-query-images
- *  @preserve
- */
-
-/*exported MediaQueryImages */
-
-var MediaQueryImages = (function ($) {
-
 'use strict';
+
+import $ from 'jquery';
 
 var defaults = {
     blankClass: 'hidden'
@@ -116,10 +108,10 @@ MediaQueryImages.prototype.refresh = function () {
     runCheck.call(this);
 };
 
-$.fn.MediaQueryImages = function (mqs, options) {
-    return new MediaQueryImages(this, mqs, options);
-};
+// $.fn.MediaQueryImages = function (mqs, options) {
+//     return new MediaQueryImages(this, mqs, options);
+// };
 
-return MediaQueryImages;
+export default MediaQueryImages;
 
-}(jQuery || Zepto || ender || $));
+
