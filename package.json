@@ -1,10 +1,10 @@
 {
   "name": "media-query-images",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Loads images based on media queries for better page performance.",
   "jsnext:main": "media-query-images.js",
   "main": "cjs/media-query-images.js",
-  "export": "VIEW",
+  "export": "MediaQueryImages",
   "scripts": {
     "iife": "rollup -c rollup-iife.config.js",
     "cjs": "rollup -c rollup-cjs.config.js",
@@ -17,8 +17,8 @@
     "url": "git@github.com:TheC2Group/media-query-images.git"
   },
   "keywords": [
-    "scroll",
-    "viewport"
+    "media query",
+    "image"
   ],
   "author": "The C2 Group",
   "license": "MIT",
