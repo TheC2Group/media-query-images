@@ -108,10 +108,6 @@ MediaQueryImages.prototype.refresh = function () {
     runCheck.call(this);
 };
 
-// $.fn.MediaQueryImages = function (mqs, options) {
-//     return new MediaQueryImages(this, mqs, options);
-// };
-
 export default MediaQueryImages;
 
 
