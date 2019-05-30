@@ -1,15 +1,12 @@
 {
   "name": "media-query-images",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "Loads images based on media queries for better page performance.",
   "jsnext:main": "media-query-images.js",
   "main": "cjs/media-query-images.js",
   "export": "MediaQueryImages",
   "scripts": {
-    "iife": "rollup -c rollup-iife.config.js",
-    "cjs": "rollup -c rollup-cjs.config.js",
-    "umd": "rollup -c rollup-umd.config.js",
-    "build": "npm run iife && npm run cjs && npm run umd",
+    "build": "rollup -c rollup.config.js",
     "bundle-example": "browserify -e example/js/index.js -o example/bundle/index.js"
   },
   "repository": {
