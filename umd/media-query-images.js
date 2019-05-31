@@ -5,122 +5,137 @@
  * @license MIT (c) The C2 Group (c2experience.com)
  */
 (function (global, factory) {
-    typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory(require('jquery')) :
-    typeof define === 'function' && define.amd ? define(['jquery'], factory) :
-    (global = global || self, global.MediaQueryImages = factory(global.jQuery));
-}(this, function ($) { 'use strict';
+  typeof exports === 'object' && typeof module !== 'undefined' ? module.exports = factory() :
+  typeof define === 'function' && define.amd ? define(factory) :
+  (global = global || self, global.MediaQueryImages = factory());
+}(this, function () { 'use strict';
 
-    $ = $ && $.hasOwnProperty('default') ? $['default'] : $;
+  var defaults = {
+    blankClass: 'hidden'
+  };
+  var isRetina = window.devicePixelRatio > 1;
 
-    var defaults = {
-      blankClass: 'hidden'
-    };
-    var isRetina = window.devicePixelRatio > 1;
+  var setBlank = function setBlank(img) {
+    var $img = img;
+    $img.classList.add(this.opts.blankClass);
 
-    var setBlank = function setBlank(img) {
-      var $img = $(img);
-      $img.addClass(this.opts.blankClass);
+    if ($img.tagName === 'IMG') {
+      $img.removeAttribute('src');
+    } else {
+      $img.style.backgroundImage = '';
+    }
+  };
 
-      if ($img.is('img')) {
-        $img.removeAttr('src');
-      } else {
-        $img.css('background-image', '');
-      }
-    };
+  var setImage = function setImage(img, attrName) {
+    var $img = img,
+        path = $img.getAttribute(attrName);
 
-    var setImage = function setImage(img, attrName) {
-      var $img = $(img),
-          path = $img.attr(attrName);
+    if (!path) {
+      setBlank.call(this, img);
+      return;
+    }
 
-      if (!path) {
+    $img.classList.remove(this.opts.blankClass);
+
+    if ($img.tagName === 'IMG') {
+      $img.setAttribute('src', path);
+    } else {
+      $img.style.backgroundImage = 'url("' + path + '")';
+    }
+  };
+
+  var setSrc = function setSrc(index) {
+    var mq, attrName; // if no default was set
+
+    if (index >= this.mqs.length) {
+      this.$images.forEach(function (img, i) {
         setBlank.call(this, img);
+      }.bind(this));
+      return false;
+    }
+
+    mq = this.mqs[index];
+    attrName = isRetina ? mq.retinaAttrName || mq.attrName : mq.attrName;
+    if (!attrName) return false;
+    this.$images.forEach(function (img) {
+      setImage.call(this, img, attrName);
+    }.bind(this));
+  };
+
+  var runCheck = function runCheck() {
+    for (var x = 0, xlen = this.mqls.length; x < xlen; x += 1) {
+      if (this.mqls[x].matches) {
+        setSrc.call(this, x);
         return;
       }
+    }
 
-      $img.removeClass(this.opts.blankClass);
+    setSrc.call(this, xlen);
+  };
 
-      if ($img.is('img')) {
-        $img.attr('src', path);
-      } else {
-        $img.css('background-image', 'url("' + path + '")');
-      }
-    };
+  var bindListeners = function bindListeners() {
+    if (!this.mqls[0].addListener) return;
+    this.mqls.forEach(function (mql) {
+      mql.addListener(runCheck.bind(this));
+    }.bind(this));
+  };
 
-    var setSrc = function setSrc(index) {
-      var mq, attrName; // if no default was set
+  var createMediaQueryLists = function createMediaQueryLists() {
+    return this.mqs.filter(function (mq) {
+      return mq.mediaQuery;
+    }).map(function (mq) {
+      return matchMedia(mq.mediaQuery);
+    });
+  };
 
-      if (index >= this.mqs.length) {
-        this.$images.each(function (i, img) {
-          setBlank.call(this, img);
-        }.bind(this));
-        return false;
-      }
+  var extend = function extend(out) {
+    out = out || {};
 
-      mq = this.mqs[index];
-      attrName = isRetina ? mq.retinaAttrName || mq.attrName : mq.attrName;
-      if (!attrName) return false;
-      this.$images.each(function (i, img) {
-        setImage.call(this, img, attrName);
-      }.bind(this));
-    };
+    for (var i = 1; i < arguments.length; i++) {
+      var obj = arguments[i];
+      if (!obj) continue;
 
-    var runCheck = function runCheck() {
-      for (var x = 0, xlen = this.mqls.length; x < xlen; x += 1) {
-        if (this.mqls[x].matches) {
-          setSrc.call(this, x);
-          return;
+      for (var key in obj) {
+        if (obj.hasOwnProperty(key)) {
+          if (typeof obj[key] === 'object') out[key] = extend(out[key], obj[key]);else out[key] = obj[key];
         }
       }
+    }
 
-      setSrc.call(this, xlen);
-    };
+    return out;
+  };
 
-    var bindListeners = function bindListeners() {
-      if (!this.mqls[0].addListener) return;
-      this.mqls.forEach(function (mql) {
-        mql.addListener(runCheck.bind(this));
-      }.bind(this));
-    };
+  var init = function init(images, mqs, options) {
+    if (!images || !mqs || !mqs.length || !matchMedia) return false;
+    this.selector = null;
 
-    var createMediaQueryLists = function createMediaQueryLists() {
-      return this.mqs.filter(function (mq) {
-        return mq.mediaQuery;
-      }).map(function (mq) {
-        return matchMedia(mq.mediaQuery);
-      });
-    };
+    if (typeof images === 'string') {
+      this.selector = images;
+    } else if (typeof images === 'object' && images.selector) {
+      this.selector = images.selector;
+    }
 
-    var init = function init(images, mqs, options) {
-      if (!images || !mqs || !mqs.length || !matchMedia) return false;
-      this.selector = null;
+    this.$images = document.querySelectorAll(images);
+    this.mqs = mqs;
+    this.opts = extend({}, defaults, options);
+    this.mqls = createMediaQueryLists.call(this);
+    bindListeners.call(this);
+    runCheck.call(this);
+    return true;
+  };
 
-      if (typeof images === 'string') {
-        this.selector = images;
-      } else if (typeof images === 'object' && images.selector) {
-        this.selector = images.selector;
-      }
+  var MediaQueryImages = function MediaQueryImages(images, mqs, options) {
+    this.result = init.call(this, images, mqs, options);
+  };
 
-      this.$images = $(images);
-      this.mqs = mqs;
-      this.opts = $.extend({}, defaults, options);
-      this.mqls = createMediaQueryLists.call(this);
-      bindListeners.call(this);
-      runCheck.call(this);
-      return true;
-    };
+  MediaQueryImages.prototype.runCheck = runCheck; // refresh the selector
 
-    var MediaQueryImages = function MediaQueryImages(images, mqs, options) {
-      this.result = init.call(this, images, mqs, options);
-    };
+  MediaQueryImages.prototype.refresh = function () {
+    if (!this.selector || !this.result) return;
+    this.$images = document.getElementsByTagName(this.selector);
+    runCheck.call(this);
+  };
 
-    MediaQueryImages.prototype.runCheck = runCheck; // refresh the jQuery selector
-
-    MediaQueryImages.prototype.refresh = function () {
-      if (!this.selector || !this.result) return;
-      this.$images = $(this.selector);
-      runCheck.call(this);
-    };
-
-    return MediaQueryImages;
+  return MediaQueryImages;
 
 }));

@@ -19,31 +19,25 @@ export default {
             banner,
             file: `cjs/${filename}`,
             format: 'cjs',
-            globals: {
-                jquery: 'jQuery'
-            },
+            globals: {},
             name: pjson['export']
         },
         {
             banner,
             file: `iife/${filename}`,
             format: 'iife',
-            globals: {
-                jquery: 'jQuery'
-            },
+            globals: {},
             name: pjson['export']
         },
         {
             banner,
             file: `umd/${filename}`,
             format: 'umd',
-            globals: {
-                jquery: 'jQuery'
-            },
+            globals: {},
             name: pjson['export'],
         }
     ],
-    external: [ 'jquery' ],
+    external: [],
     plugins: [
         babel(),
         resolve(),

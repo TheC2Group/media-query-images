@@ -1,4 +1,3 @@
-var $ = require('jquery');
 var MediaQueryImages = require('../../cjs/media-query-images.js');
 
 new MediaQueryImages('.background-image', [
