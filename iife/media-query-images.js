@@ -1,7 +1,7 @@
 /*!
  * media-query-images
  * https://github.com/TheC2Group/media-query-images
- * @version 1.0.3
+ * @version 1.0.4
  * @license MIT (c) The C2 Group (c2experience.com)
  */
 var MediaQueryImages = (function () {

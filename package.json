@@ -1,6 +1,6 @@
 {
   "name": "media-query-images",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "Loads images based on media queries for better page performance.",
   "jsnext:main": "media-query-images.js",
   "main": "cjs/media-query-images.js",
