@@ -13,31 +13,29 @@ var MediaQueryImages = (function () {
   var isRetina = window.devicePixelRatio > 1;
 
   var setBlank = function setBlank(img) {
-    var $img = img;
-    $img.classList.add(this.opts.blankClass);
+    img.classList.add(this.opts.blankClass);
 
-    if ($img.tagName === 'IMG') {
-      $img.removeAttribute('src');
+    if (img.tagName === 'IMG') {
+      img.removeAttribute('src');
     } else {
-      $img.style.backgroundImage = '';
+      img.style.backgroundImage = '';
     }
   };
 
   var setImage = function setImage(img, attrName) {
-    var $img = img,
-        path = $img.getAttribute(attrName);
+    var path = img.getAttribute(attrName);
 
     if (!path) {
       setBlank.call(this, img);
       return;
     }
 
-    $img.classList.remove(this.opts.blankClass);
+    img.classList.remove(this.opts.blankClass);
 
-    if ($img.tagName === 'IMG') {
-      $img.setAttribute('src', path);
+    if (img.tagName === 'IMG') {
+      img.setAttribute('src', path);
     } else {
-      $img.style.backgroundImage = 'url("' + path + '")';
+      img.style.backgroundImage = 'url("' + path + '")';
     }
   };
 
@@ -45,7 +43,7 @@ var MediaQueryImages = (function () {
     var mq, attrName; // if no default was set
 
     if (index >= this.mqs.length) {
-      this.$images.forEach(function (img, i) {
+      this.image.forEach(function (img) {
         setBlank.call(this, img);
       }.bind(this));
       return false;
@@ -54,7 +52,7 @@ var MediaQueryImages = (function () {
     mq = this.mqs[index];
     attrName = isRetina ? mq.retinaAttrName || mq.attrName : mq.attrName;
     if (!attrName) return false;
-    this.$images.forEach(function (img) {
+    this.image.forEach(function (img) {
       setImage.call(this, img, attrName);
     }.bind(this));
   };
@@ -112,7 +110,7 @@ var MediaQueryImages = (function () {
       this.selector = images.selector;
     }
 
-    this.$images = document.querySelectorAll(images);
+    this.image = document.querySelectorAll(images);
     this.mqs = mqs;
     this.opts = extend({}, defaults, options);
     this.mqls = createMediaQueryLists.call(this);
@@ -129,7 +127,7 @@ var MediaQueryImages = (function () {
 
   MediaQueryImages.prototype.refresh = function () {
     if (!this.selector || !this.result) return;
-    this.$images = document.getElementsByTagName(this.selector);
+    this.image = document.getElementsByTagName(this.selector);
     runCheck.call(this);
   };
 
